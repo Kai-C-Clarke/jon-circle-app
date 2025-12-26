@@ -1,0 +1,28 @@
+/* Add to style.css - Memory action buttons */
+
+.memory-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.memory-actions .btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+.memory-actions .btn i {
+    margin-right: 5px;
+}
+
+/* Make buttons stack on smaller screens */
+@media (max-width: 600px) {
+    .memory-actions {
+        flex-direction: column;
+    }
+    
+    .memory-actions .btn {
+        width: 100%;
+    }
+}
