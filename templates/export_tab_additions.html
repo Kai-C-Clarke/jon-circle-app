@@ -1,0 +1,109 @@
+<!-- Add to Export Tab in index.html -->
+
+<div id="export" class="tab-content">
+    <h2>Export Your Memories</h2>
+    
+    <!-- Existing chronological export -->
+    <div class="export-option">
+        <h3>
+            <i class="fas fa-file-pdf"></i> Chronological Archive
+        </h3>
+        <p>Export all memories exactly as written, in chronological order with linked photos.</p>
+        <button onclick="generatePDF()" class="btn-primary">
+            <i class="fas fa-download"></i> Generate Chronological PDF
+        </button>
+    </div>
+    
+    <hr>
+    
+    <!-- NEW: Biography edition export -->
+    <div class="export-option">
+        <h3>
+            <i class="fas fa-book"></i> Biography Edition (AI-Synthesized)
+        </h3>
+        <p>
+            Let AI transform your memories into a flowing biographical narrative 
+            with magazine-style layout. Preview and edit before generating final PDF.
+        </p>
+        
+        <div class="biography-options">
+            <p><strong>Choose your AI writer:</strong></p>
+            <button onclick="generateBiography('deepseek')" class="btn btn-secondary">
+                <i class="fas fa-bolt"></i> DeepSeek (Fast)
+            </button>
+            <button onclick="generateBiography('claude')" class="btn btn-secondary">
+                <i class="fas fa-brain"></i> Claude (Detailed)
+            </button>
+            <button onclick="generateBiography('both')" class="btn-primary">
+                <i class="fas fa-copy"></i> Generate Both & Compare
+            </button>
+        </div>
+        
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <strong>What to expect:</strong>
+            <ul>
+                <li>AI reads all your memories and synthesizes them into flowing prose</li>
+                <li>Organizes by life phases/decades with chapter breaks</li>
+                <li>Preserves all factual details while adding transitions</li>
+                <li>You can preview, edit, and approve before final PDF</li>
+                <li>Photos are intelligently placed in the narrative</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+.export-option {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 2px solid #e8b44f;
+}
+
+.export-option h3 {
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+.export-option h3 i {
+    color: #e8b44f;
+    margin-right: 10px;
+}
+
+.biography-options {
+    margin: 20px 0;
+}
+
+.biography-options button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.info-box {
+    background: #f0f8ff;
+    border-left: 4px solid #0066cc;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.info-box i {
+    color: #0066cc;
+    margin-right: 8px;
+}
+
+.info-box ul {
+    margin: 10px 0 0 25px;
+}
+
+.info-box li {
+    margin-bottom: 5px;
+}
+
+hr {
+    border: none;
+    border-top: 2px dashed #ddd;
+    margin: 30px 0;
+}
+</style>

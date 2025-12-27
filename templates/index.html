@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Circle: Family Stories</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Circle: Family Stories</h1>
+            <p class="tagline">Preserve your family memories for generations</p>
+        </header>
+        
+        <!-- Profile Setup (shown first time) -->
+        <div id="profile-setup" class="profile-setup" style="display: none;">
+            <div class="setup-header">
+                <h2>Welcome to The Circle</h2>
+                <p class="welcome-text">Start by telling us about yourself to begin preserving your family stories.</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="user-name"><i class="fas fa-user"></i> Your Name *</label>
+                <input type="text" id="user-name" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="birth-date"><i class="fas fa-calendar-alt"></i> Date of Birth *</label>
+                <input type="date" id="birth-date">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-users"></i> Your Family Roles * <small class="hint" style="font-weight: normal;">(Select all that apply)</small></label>
+                <div class="checkbox-group" id="family-roles">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="parent"> Parent
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="grandparent"> Grandparent
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="child"> Child
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="sibling"> Sibling
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="cousin"> Cousin
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="spouse"> Spouse
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="aunt-uncle"> Aunt/Uncle
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="niece-nephew"> Niece/Nephew
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="family-role" value="other"> Other
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="birth-place"><i class="fas fa-map-marker-alt"></i> Birth Place (Optional)</label>
+                <input type="text" id="birth-place" placeholder="Where were you born?">
+            </div>
+            
+            <div class="form-actions">
+                <button onclick="saveProfile()" class="btn-primary">
+                    <i class="fas fa-heart-circle-plus"></i> Join The Circle
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Interface with Tabs -->
+        <div class="tab-container" style="display: none;">
+            <!-- Tab Navigation -->
+            <nav class="tabs">
+                <button class="tab active" onclick="showTab('capture', event)">
+                    <i class="fas fa-plus-circle"></i> Share Memory
+                </button>
+                <button class="tab" onclick="showTab('timeline', event)">
+                    <i class="fas fa-stream"></i> Timeline
+                </button>
+                <button class="tab" onclick="showTab('search', event)">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <button class="tab" onclick="showTab('media', event)">
+                    <i class="fas fa-images"></i> Media
+                </button>
+                <button class="tab" onclick="showTab('comments', event)">
+                    <i class="fas fa-heart"></i> Link Your Memory
+                </button>
+                <button class="tab" onclick="showTab('export', event)">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+                <button class="tab" onclick="window.location.href='/goodbye'">
+                    <i class="fas fa-sign-out-alt"></i> Done for Today
+                </button>
+            </nav>
+        
+            <!-- Capture Tab -->
+            <div id="capture" class="tab-content active">
+                <div class="tab-header">
+                    <h2><i class="fas fa-plus-circle"></i> Share a Memory</h2>
+                    <p class="tab-description">Write down a story from your life or family history</p>
+                </div>
+                
+                <div class="capture-container">
+                    <div class="prompt-suggestions">
+                        <p>Need inspiration? Try:</p>
+                        <div class="prompt-buttons">
+                            <button onclick="suggestPrompt('childhood')" class="prompt-btn">
+                                <i class="fas fa-child"></i> Childhood
+                            </button>
+                            <button onclick="suggestPrompt('family')" class="prompt-btn">
+                                <i class="fas fa-users"></i> Family Story
+                            </button>
+                            <button onclick="suggestPrompt('travel')" class="prompt-btn">
+                                <i class="fas fa-plane"></i> Travel Memory
+                            </button>
+                            <button onclick="suggestPrompt('first-job')" class="prompt-btn">
+                                <i class="fas fa-briefcase"></i> First Job
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <textarea id="memory-text" placeholder="Write your memory here... What happened? Who was there? What made it special?" rows="8"></textarea>
+                    
+                    <div class="memory-meta">
+                        <div class="meta-group">
+                            <label for="memory-date"><i class="fas fa-calendar"></i> When did this happen?</label>
+                            <input type="text" id="memory-date" placeholder="e.g., 1955, March 1975, Summer 1968">
+                            <small class="hint">Year, season, or approximate date</small>
+                        </div>
+                    </div>
+
+<!-- Voice Recording Section -->
+<div class="voice-recording-section">
+    <div class="recording-header">
+        <h3><i class="fas fa-microphone"></i> Or Record Your Story</h3>
+        <p class="hint">Speak naturally - we'll transcribe your words and save your voice</p>
+    </div>
+    
+    <!-- Record Button (shown when not recording) -->
+    <button id="record-voice-btn" onclick="startVoiceRecording()" class="btn-record">
+        <i class="fas fa-microphone"></i> Start Recording
+    </button>
+    
+    <!-- Recording Controls (shown during recording) -->
+    <div id="recording-controls" style="display: none;">
+        <div class="recording-indicator">
+            <span class="recording-dot"></span>
+            <span id="recording-timer">0:00</span>
+        </div>
+        
+        <div class="recording-buttons">
+            <button id="pause-btn" onclick="togglePauseRecording()" class="btn-secondary">
+                <i class="fas fa-pause"></i> Pause
+            </button>
+            <button onclick="stopVoiceRecording()" class="btn-stop">
+                <i class="fas fa-stop"></i> Stop & Save
+            </button>
+        </div>
+        
+        <div id="transcription-preview" class="transcription-preview">
+            Listening...
+        </div>
+    </div>
+    
+    <!-- Success Message -->
+    <div id="recording-success" class="recording-success" style="display: none;"></div>
+    
+    <!-- Hidden field to store audio filename -->
+    <input type="hidden" id="audio-filename-hidden" value="">
+</div>
+
+<!-- ADD THIS CSS TO style.css -->
+<style>
+/* Voice Recording Styles */
+.voice-recording-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+}
+
+.recording-header h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.recording-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.btn-record {
+    width: 100%;
+    padding: 15px;
+    margin-top: 15px;
+    background: white;
+    color: #667eea;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-record:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-record i {
+    font-size: 1.3rem;
+}
+
+#recording-controls {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.recording-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+}
+
+.recording-dot {
+    width: 12px;
+    height: 12px;
+    background: #ff4444;
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+#recording-timer {
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.recording-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.recording-buttons button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-stop {
+    background: #ff4444;
+    color: white;
+}
+
+.btn-stop:hover {
+    background: #cc0000;
+}
+
+.transcription-preview {
+    padding: 15px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    min-height: 60px;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.recording-success {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(46, 213, 115, 0.2);
+    border: 2px solid #2ed573;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.recording-success i {
+    color: #2ed573;
+    font-size: 1.2rem;
+}
+</style>
+
+                    
+                    <div class="capture-actions">
+                        <button onclick="saveMemory()" class="btn-primary btn-large">
+                            <i class="fas fa-save"></i> Save to Family Timeline
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline Tab -->
+            <div id="timeline" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-stream"></i> Family Timeline</h2>
+                    <p class="tab-description">All your family memories in chronological order</p>
+                </div>
+                
+                <div class="timeline-controls">
+                    <div class="search-box">
+                        <input type="text" id="timeline-search" placeholder="Search memories...">
+                        <button onclick="searchTimeline()" class="btn-secondary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <button onclick="clearTimelineSearch()" class="btn-secondary">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="timeline-content">
+                    <!-- Memories will be loaded here -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading family timeline...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Tab -->
+            <div id="search" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-search"></i> Search Family Memories</h2>
+                    <p class="tab-description">Ask natural questions about your family history</p>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-box search-box-large">
+                        <input type="text" id="search-query" placeholder="Ask a question... e.g., Where was Jon Stiles born?">
+                        <button onclick="performSmartSearch()" class="btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    
+                    <div class="search-examples">
+                        <p>Try asking:</p>
+                        <div class="example-queries">
+                            <span class="example-tag" onclick="setSearchExample('Who was Peter Elgar?')">Who was Peter Elgar?</span>
+                            <span class="example-tag" onclick="setSearchExample('Tell me about childhood memories')">Tell me about childhood memories</span>
+                            <span class="example-tag" onclick="setSearchExample('What happened in 1975?')">What happened in 1975?</span>
+                            <span class="example-tag" onclick="setSearchExample('Where did we live?')">Where did we live?</span>
+                        </div>
+                    </div>
+                    
+                    <div id="search-results">
+                        <!-- Search results will be displayed here -->
+                        <div class="empty-state">
+                            <i class="fas fa-search fa-3x"></i>
+                            <h3>Search Family Memories</h3>
+                            <p>Ask a question about your family history using natural language.</p>
+                            <p class="hint">For example: "Where was Jon Stiles born?" or "Tell me about model aircrafts"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+<!-- Media Tab -->
+<div id="media" class="tab-content">
+    <div class="tab-header">
+        <h2><i class="fas fa-images"></i> Family Media</h2>
+        <p class="tab-description">Photos, audio recordings, videos, and documents</p>
+    </div>
+    
+    <div class="media-container">
+        <!-- Messages will appear here -->
+        
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div id="media-drop-zone" class="drop-zone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Upload Media</h3>
+                <p>Drag and drop files here or</p>
+                <button id="media-upload-btn" class="btn-primary">
+                    <i class="fas fa-upload"></i> Browse Files
+                </button>
+                <input type="file" id="media-file-input" multiple style="display: none;">
+                <p class="help-text">Supports: Images, PDF, Audio, Video (Max 50MB each)</p>
+            </div>
+            
+            <div id="media-preview" class="media-preview"></div>
+            
+            <form id="media-upload-form" style="display: none;" id="media-form-fields">
+                <div class="form-group">
+                    <label for="media-title">Title *</label>
+                    <input type="text" id="media-title" placeholder="Enter a title for your media" required>
+                </div>
+                <div class="form-group">
+                    <label for="media-description">Description (Optional)</label>
+                    <textarea id="media-description" placeholder="Describe this media..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="media-date">Date (Optional)</label>
+                        <input type="date" id="media-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="media-year">Year (Optional)</label>
+                        <input type="number" id="media-year" min="1900" max="2100" placeholder="Year">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="media-people">People (Optional)</label>
+                    <input type="text" id="media-people" placeholder="Who is in this media?">
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-upload"></i> Upload Files
+                </button>
+            </form>
+        </div>
+        
+        <!-- Gallery Section -->
+        <div class="gallery-section">
+            <h3><i class="fas fa-images"></i> Media Gallery</h3>
+            <div id="media-gallery" class="media-gallery">
+                <!-- Media items will be loaded here -->
+                <div class="empty-gallery">
+                    <i class="fas fa-images"></i>
+                    <p>No media uploaded yet</p>
+                    <p>Drag and drop files or click upload to add media</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            
+            <!-- Comments/Link Your Memory Tab -->
+            <div id="comments" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-heart"></i> Link Your Memory</h2>
+                    <p class="tab-description">Share gratitude and appreciation for family memories</p>
+                </div>
+                
+                <div id="comments-content">
+                    <div class="empty-state">
+                        <i class="fas fa-comment-heart fa-3x"></i>
+                        <h3>Share Your Gratitude</h3>
+                        <p>Add love notes to family memories to express appreciation and connection.</p>
+                        <button onclick="showTab('timeline')" class="btn-primary">
+                            <i class="fas fa-heart"></i> Link Your Memory
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Tab -->
+            <div id="export" class="tab-content">
+                <div class="tab-header">
+                    <h2><i class="fas fa-file-export"></i> Export Memories</h2>
+                    <p class="tab-description">Create PDFs to share with family members</p>
+                </div>
+                
+                <div class="export-options">
+                    <div class="export-card">
+                        <div class="export-icon">
+                            <i class="fas fa-photo-video"></i>
+                        </div>
+                        <h3>Family Album</h3>
+                        <p>Memories with photos and media</p>
+                        <button onclick="generateFamilyAlbum()" class="btn-primary">
+                            <i class="fas fa-download"></i> Create Album
+                        </button>
+                    </div>
+
+                    <div class="export-card">
+                        <div class="export-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3>Biography Edition</h3>
+                        <p>AI-synthesized narrative with magazine layout</p>
+                        <div class="biography-options">
+                            <button onclick="generateBiography('both')" class="btn-primary">
+                                <i class="fas fa-copy"></i> Generate & Compare
+                            </button>
+                            <div class="small-buttons">
+                                <button onclick="generateBiography('deepseek')" class="btn-sm">
+                                    <i class="fas fa-bolt"></i> DeepSeek
+                                </button>
+                                <button onclick="generateBiography('claude')" class="btn-sm">
+                                    <i class="fas fa-brain"></i> Claude
+                                </button>
+                            </div>
+                        </div>
+                        <div class="info-hint">
+                            <i class="fas fa-info-circle"></i>
+                            AI transforms your memories into flowing prose. Preview & edit before PDF.
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="export-status" class="export-status"></div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <p>The Circle - Family Memory Preservation App</p>
+                <p class="footer-info">Preserving stories for future generations</p>
+            </div>
+        </footer>
+    </div>
+    
+ <!-- Biography Preview Modal -->
+    <div id="biography-preview-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content biography-preview-content">
+            <h2><i class="fas fa-book"></i> Biography Preview - Compare Versions</h2>
+            
+            <div class="model-selector">
+                <button id="show-deepseek" class="btn btn-secondary active" onclick="showVersion('deepseek')">
+                    DeepSeek Version
+                </button>
+                <button id="show-claude" class="btn btn-secondary" onclick="showVersion('claude')">
+                    Claude Version
+                </button>
+                <button id="show-both" class="btn btn-secondary" onclick="showVersion('both')">
+                    Side by Side
+                </button>
+            </div>
+            
+            <div id="biography-content" class="biography-content">
+                <!-- DeepSeek version -->
+                <div id="deepseek-version" class="version-panel">
+                    <h3>DeepSeek Generated Biography</h3>
+                    <div id="deepseek-chapters" class="chapters-container">
+                        <!-- Chapters will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Claude version -->
+                <div id="claude-version" class="version-panel">
+                    <h3>Claude Generated Biography</h3>
+                    <div id="claude-chapters" class="chapters-container">
+                        <!-- Chapters will be inserted here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="biography-actions">
+                <button class="btn btn-primary" onclick="selectVersion('deepseek')">
+                    <i class="fas fa-check"></i> Use DeepSeek Version
+                </button>
+                <button class="btn btn-primary" onclick="selectVersion('claude')">
+                    <i class="fas fa-check"></i> Use Claude Version
+                </button>
+                <button class="btn btn-secondary" onclick="regenerateBiography()">
+                    <i class="fas fa-sync"></i> Regenerate Both
+                </button>
+                <button class="btn btn-secondary" onclick="closeBiographyPreview()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript modules -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/profile.js"></script>
+    <script src="/static/js/timeline.js"></script>
+    <script src="/static/js/search.js"></script>
+    <script src="/static/js/capture.js"></script>
+    <script src="/static/js/comments.js"></script>
+    <script src="/static/js/export.js"></script>
+    <script src="/static/js/media.js"></script>
+    <script src="/static/js/voice_recorder.js"></script>
+    
+    <!-- Declare global functions -->
+    <script>
+        // Override saveProfile to handle multiple checkboxes
+        const originalSaveProfile = window.saveProfile;
+        window.saveProfile = async function() {
+            try {
+                const name = document.getElementById('user-name').value.trim();
+                const birthDate = document.getElementById('birth-date').value;
+                const birthPlace = document.getElementById('birth-place').value.trim();
+                
+                // Get all checked family roles
+                const roleCheckboxes = document.querySelectorAll('input[name="family-role"]:checked');
+                const roles = Array.from(roleCheckboxes).map(cb => cb.value);
+                
+                // Validation
+                if (!name) {
+                    alert('Please enter your name');
+                    return;
+                }
+                
+                if (!birthDate) {
+                    alert('Please enter your birth date');
+                    return;
+                }
+                
+                if (roles.length === 0) {
+                    alert('Please select at least one family role');
+                    return;
+                }
+                
+                // Join roles with comma for storage
+                const familyRole = roles.join(', ');
+                
+                const response = await fetch('/api/profile/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        birth_date: birthDate,
+                        family_role: familyRole,
+                        birth_place: birthPlace
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Hide setup, show main interface
+                    document.getElementById('profile-setup').style.display = 'none';
+                    document.querySelector('.tab-container').style.display = 'flex';
+                    
+                    // Store profile
+                    window.userProfile = {
+                        name: name,
+                        birth_date: birthDate,
+                        family_role: familyRole,
+                        birth_place: birthPlace
+                    };
+                    
+                    // Show welcome message
+                    alert(`Welcome to The Circle, ${name}!`);
+                    
+                    // Load initial content
+                    if (typeof loadMemories === 'function') {
+                        loadMemories();
+                    }
+                } else {
+                    alert('Error saving profile: ' + data.message);
+                }
+                
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('Error saving profile. Please try again.');
+            }
+        };
+        
+        // Make functions available globally
+        //window.saveProfile = saveProfile; // Already defined above
+        window.performSmartSearch = performSmartSearch;
+        window.loadMemories = loadMemories;
+        window.addComment = addComment;
+        window.viewMemory = viewMemory;
+        window.saveMemory = saveMemory;
+        window.suggestPrompt = suggestPrompt;
+        window.searchTimeline = searchTimeline;
+        window.clearTimelineSearch = clearTimelineSearch;
+        window.generatePDF = generatePDF;
+        window.generateFamilyAlbum = generateFamilyAlbum;
+        window.setSearchExample = setSearchExample;
+        
+        // Helper functions
+        function setSearchExample(example) {
+            document.getElementById('search-query').value = example;
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any additional initialization
+        });
+    </script>
+</body>
+</html>
